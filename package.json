@@ -1,0 +1,19 @@
+{
+	"name": "hspost",
+	"version": "0.1.0",
+	"description": "A social network platform for high school students and their classmates to connect",
+	"main": "index.js",
+	"repository": "https://github.com/davidzech27/HSpost",
+	"author": "David Zechowy <davidzechowy@gmail.com>",
+	"license": "MIT",
+	"private": true,
+	"workspaces": [
+		"client",
+		"server"
+	],
+	"scripts": {
+		"dev": "yarn --cwd server dev & yarn --cwd client dev",
+		"build": "yarn --cwd server build & yarn --cwd client build",
+		"start": "yarn --cwd server start & yarn --cwd client start"
+	}
+}
