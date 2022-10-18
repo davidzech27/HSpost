@@ -1,103 +1,30 @@
 import { createServer } from "@graphql-yoga/node"
-import { DateTimeTypeDefinition, DateTimeResolver } from "graphql-scalars"
+import { loadFilesSync } from "@graphql-tools/load-files"
+import { join } from "path"
+
 import { PrismaClient } from "@prisma/client"
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({ log: ["error", "info", "warn"] })
 
-const typeDefs = /* GraphQL */ `
-	type User {
-		email: ID!
-		name: String!
-		photo: String
-		bio: String
-		posts: [Post!]
-		comments: [Comment!]
-		joinedOn: DateTime!
-	}
+const startServer = async () => {
+	const server = createServer({
+		schema: {
+			typeDefs: loadFilesSync(
+				join(__dirname, "./modules/**/*schema.graphql")
+			),
+			resolvers: loadFilesSync(
+				join(__dirname, "./modules/**/*resolvers.ts")
+			)
+		},
+		context: ({ req, res }) => ({
+			req,
+			res,
+			db: prisma
+		}),
+		endpoint: "/"
+	})
 
-	type Post {
-		id: ID!
-		text: String!
-		poster: User!
-		comments: [Comment!]
-		postVisibility: PostVisibility!
-		postedOn: DateTime!
-	}
-
-	enum PostVisibility {
-		PUBLIC
-		PRIVATE
-	}
-
-	type Comment {
-		id: ID!
-		text: String!
-		commenter: User!
-		replyTo: Comment
-		commentedOn: DateTime!
-	}
-
-	type Query {
-		posts: [Post!]
-	}
-
-	type Mutation {
-		createPost(
-			text: String
-			posterEmail: String
-			postVisibility: PostVisibility
-		): Post
-	}
-
-	${DateTimeTypeDefinition}
-`
-
-const resolvers = {
-	Query: {
-		posts: async (_: any, __: any, { db }: { db: PrismaClient }) => {
-			return await db.post.findMany({})
-		}
-	},
-	Post: {
-		poster: (parent: any, __: any, { db }: { db: PrismaClient }) => {
-			return db.post
-				.findUnique({
-					where: {
-						id: parent.id
-					}
-				})
-				.poster()
-		}
-	},
-	Mutation: {
-		createPost: async (
-			_: any,
-			{ text, posterEmail, postVisibility }: any,
-			{ db }: { db: PrismaClient }
-		) => {
-			return await db.post.create({
-				data: {
-					text,
-					posterEmail,
-					postVisibility
-				}
-			})
-		}
-	},
-	DateTime: DateTimeResolver
+	server.start()
 }
 
-const server = createServer({
-	schema: {
-		typeDefs,
-		resolvers
-	},
-	context: ({ req, res }) => ({
-		req,
-		res,
-		db: prisma
-	}),
-	endpoint: "/"
-})
-
-server.start()
+startServer()

@@ -1,0 +1,7 @@
+type Comment {
+	id: ID!
+	text: String!
+	commenter: User!
+	replyTo: Comment
+	commentedOn: DateTime!
+}
