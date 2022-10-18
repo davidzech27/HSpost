@@ -1,8 +1,10 @@
-import { PrismaClient } from "@prisma/client"
+import { Resolvers } from "types/graphql"
+import { Post } from "types/models"
+import { Maybe } from "types/util"
 
-const resolvers = {
+const resolvers: Resolvers = {
 	Query: {
-		posts: async (_: any, __: any, { db }: { db: PrismaClient }) => {
+		posts: async (_, __, { db }): Promise<Maybe<Post[]>> => {
 			return await db.post.findMany({})
 		}
 	}

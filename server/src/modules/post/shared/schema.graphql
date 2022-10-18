@@ -3,11 +3,13 @@ type Post {
 	text: String!
 	poster: User!
 	comments: [Comment!]
+	usersCommented: Int!
 	postVisibility: PostVisibility!
 	postedOn: DateTime!
 }
 
 enum PostVisibility {
 	PUBLIC
+	DISTRICT
 	PRIVATE
 }

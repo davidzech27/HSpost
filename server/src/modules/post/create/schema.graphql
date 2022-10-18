@@ -3,5 +3,5 @@ type Mutation {
 		text: String!
 		posterEmail: String!
 		postVisibility: PostVisibility!
-	): Post
+	): Post!
 }
