@@ -1,6 +1,6 @@
 import { GraphQLYogaError } from "@graphql-yoga/node"
 import jwt from "jsonwebtoken"
-import { Resolvers } from "types/graphql"
+import Resolvers from "types/resolvers"
 
 const resolvers: Resolvers = {
 	Query: {
@@ -20,7 +20,6 @@ const resolvers: Resolvers = {
 			} catch {
 				return Promise.reject(new GraphQLYogaError("Session expired"))
 			}
-			// codegen and bear token
 
 			const user = await db.user.findUnique({
 				where: {
@@ -54,7 +53,7 @@ const resolvers: Resolvers = {
 			)
 
 			return {
-				...user,
+				...user!,
 				accessToken
 			}
 		}

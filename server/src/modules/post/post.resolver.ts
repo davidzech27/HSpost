@@ -1,10 +1,8 @@
-import { Resolvers } from "types/graphql"
-import { Post, User } from "types/models"
-import { Maybe } from "types/util"
+import Resolvers from "types/resolvers"
 
 const resolvers: Resolvers = {
 	Post: {
-		poster: async (parent: Post, __, { db }): Promise<Maybe<User>> => {
+		poster: async (parent, __, { db }) => {
 			return await db.post
 				.findUnique({
 					where: {

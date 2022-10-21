@@ -16,7 +16,8 @@
 	"scripts": {
 		"dev": "npx tsnd --respawn --transpile-only --exit-child src/app.ts",
 		"build": "npx tsc",
-		"start": "node ./dist/app.js"
+		"start": "node ./dist/app.js",
+		"codegen": "graphql-codegen --config codegen.ts"
 	},
 	"dependencies": {
 		"@graphql-tools/load-files": "^6.6.1",

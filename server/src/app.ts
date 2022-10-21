@@ -3,7 +3,6 @@ import express from "express"
 import { loadFilesSync } from "@graphql-tools/load-files"
 import { join } from "path"
 import { PrismaClient } from "@prisma/client"
-import { Context } from "types/graphql"
 
 import initializeAuth from "./auth"
 
