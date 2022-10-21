@@ -47,3 +47,17 @@ model Comment {
   postId         String
   commentedOn    DateTime  @default(now())
 }
+
+model District {
+  emailDomain String   @id
+  name        String
+  School      School[]
+}
+
+model School {
+  name        String
+  emailDomain String
+  district    District? @relation(fields: [emailDomain], references: [emailDomain])
+
+  @@id([name, emailDomain])
+}

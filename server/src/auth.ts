@@ -23,7 +23,20 @@ const initializeAuth = (app: Application, db: PrismaClient) => {
 				try {
 					const email = profile.emails?.[0].value ?? null
 
-					if (!email) return done(null, false)
+					if (
+						!(
+							email &&
+							(await db.district.findUnique({
+								where: {
+									emailDomain: email.slice(
+										email.indexOf("@") + 1
+									)
+								}
+							}))
+						)
+					) {
+						return done(null, false)
+					}
 
 					const name = profile.displayName
 						.replaceAll("_", " ")
@@ -66,6 +79,13 @@ const initializeAuth = (app: Application, db: PrismaClient) => {
 
 	app.get("/oauth/redirect", async (req, res, next) =>
 		passport.authenticate("google", { session: false }, (error, email) => {
+			if (error) console.error(error)
+			if (res.writableEnded) {
+				// In case due to unexpected OAuth behavior and this function is called multiple times, this avoids getting the runtime error for setting headers after they're sent to the client
+				setTimeout(() => {}, 5000)
+				return
+			}
+
 			if (error) {
 				return res.redirect(`${process.env.CLIENT_URL}/500`)
 			}
