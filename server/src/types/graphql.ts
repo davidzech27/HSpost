@@ -1,10 +1,12 @@
 import { YogaInitialContext } from "@graphql-yoga/node"
 import { PrismaClient } from "@prisma/client"
+import { Request, Response } from "express"
 
-interface Context extends YogaInitialContext {
+export interface Context extends YogaInitialContext {
+	userEmail: string | undefined
 	db: PrismaClient
-	req: any
-	res: any
+	req: Request
+	res: Response
 }
 
 type Resolver = (parent: any, args: any, context: Context, info: any) => any

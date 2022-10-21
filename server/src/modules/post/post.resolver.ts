@@ -11,7 +11,7 @@ const resolvers: Resolvers = {
 						id: parent.id
 					}
 				})
-				.poster({})
+				.poster()
 		}
 	}
 }

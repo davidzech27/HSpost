@@ -14,7 +14,7 @@ model User {
   bio        String?   @db.VarChar(10000)
   posts      Post[]
   comments   Comment[]
-  schoolName String
+  schoolName String?
   joinedOn   DateTime  @default(now())
 }
 

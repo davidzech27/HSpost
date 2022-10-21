@@ -5,7 +5,7 @@ export interface User {
 	bio?: string | null
 	posts?: Post[]
 	comments?: Comment[]
-	schoolName: string
+	schoolName?: string | null
 	joinedOn: Date
 }
 

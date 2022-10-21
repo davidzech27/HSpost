@@ -1,0 +1,11 @@
+type Query {
+	me: MeResponse!
+}
+
+type MeResponse {
+	email: ID!
+	name: String!
+	photo: String
+	schoolName: String
+	accessToken: String!
+}
