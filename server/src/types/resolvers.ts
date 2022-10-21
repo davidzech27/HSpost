@@ -1,10 +1,13 @@
-import { YogaInitialContext } from "@graphql-yoga/node"
+import { YogaInitialContext, PubSub } from "@graphql-yoga/node"
 import { PrismaClient } from "@prisma/client"
 import { Request, Response } from "express"
 
 interface Context extends YogaInitialContext {
 	userEmail: string | undefined
 	db: PrismaClient
+	pubSub: PubSub<{
+		[key: string]: [] | [any] | [string | number, any]
+	}>
 	req: Request
 	res: Response
 }

@@ -1,4 +1,4 @@
-import { createServer } from "@graphql-yoga/node"
+import { createServer, createPubSub } from "@graphql-yoga/node"
 import express from "express"
 import { loadFilesSync } from "@graphql-tools/load-files"
 import { join } from "path"
@@ -8,6 +8,8 @@ import initializeAuth from "./auth"
 
 const prisma = new PrismaClient({ log: ["error", "info", "warn", "query"] })
 
+const pubSub = createPubSub()
+
 const startServer = () => {
 	const server = createServer({
 		schema: {
@@ -15,7 +17,7 @@ const startServer = () => {
 				join(__dirname, "./modules/**/*schema.graphql")
 			),
 			resolvers: loadFilesSync(
-				join(__dirname, "./modules/**/*resolver.ts")
+				join(__dirname, "./modules/**/*resolvers.ts")
 			)
 		},
 		context: ({
@@ -27,9 +29,10 @@ const startServer = () => {
 		}) => {
 			return {
 				userEmail: req.user,
+				db: prisma,
+				pubSub,
 				req,
-				res,
-				db: prisma
+				res
 			}
 		},
 		cors: {
