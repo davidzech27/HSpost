@@ -2,7 +2,7 @@ import Resolvers from "types/resolvers"
 
 const resolvers: Resolvers = {
 	Post: {
-		poster: async (parent, __, { db }) => {
+		poster: async (parent, _, { db }) => {
 			return await db.post
 				.findUnique({
 					where: {
@@ -10,6 +10,15 @@ const resolvers: Resolvers = {
 					}
 				})
 				.poster()
+		},
+		comments: async (parent, _, { db }) => {
+			return await db.post
+				.findUnique({
+					where: {
+						id: parent.id
+					}
+				})
+				.comments()
 		}
 	}
 }
