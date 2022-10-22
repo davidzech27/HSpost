@@ -117,7 +117,7 @@ const initializeAuth = (app: Application, db: PrismaClient) => {
 
 		if (!authorization) return next()
 
-		const token = authorization.split(" ")[1]
+		const token = authorization.replace("Bearer ", "")
 
 		try {
 			const email: string = (
