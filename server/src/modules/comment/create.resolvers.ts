@@ -9,26 +9,23 @@ const resolvers: Resolvers = {
 			{ db, userEmail, pubSub }
 		) => {
 			if (userEmail) {
-				const [newComment, _] = await db.$transaction([
-					db.comment.create({
-						data: {
-							text,
-							commenterEmail: userEmail,
-							replyToId,
-							postId
-						}
-					}),
-					db.post.update({
-						where: {
-							id: postId
-						},
-						data: {
-							commentCount: {
-								increment: 1
+				const newComment = await db.post.update({
+					data: {
+						comments: {
+							create: {
+								text,
+								commenterEmail: userEmail,
+								replyToId
 							}
+						},
+						commentCount: {
+							increment: 1
 						}
-					})
-				])
+					},
+					where: {
+						id: postId
+					}
+				})
 
 				pubSub.publish("NEW_COMMENT", postId, newComment)
 
