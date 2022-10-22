@@ -78,37 +78,38 @@ const initializeAuth = (app: Application, db: PrismaClient) => {
 	)
 
 	app.get("/oauth/redirect", async (req, res, next) =>
-		passport.authenticate("google", { session: false }, (error, email) => {
-			if (error) console.error(error)
-			if (res.writableEnded) {
-				// In case due to unexpected OAuth behavior and this function is called multiple times, this avoids getting the runtime error for setting headers after they're sent to the client
-				setTimeout(() => {}, 5000)
-				return
-			}
-
-			if (error) {
-				return res.redirect(`${process.env.CLIENT_URL}/500`)
-			}
-
-			if (!email) {
-				return res.redirect(`${process.env.CLIENT_URL}/signin`)
-			}
-
-			const refreshToken = jwt.sign(
-				{ email },
-				process.env.REFRESH_TOKEN_SECRET!,
-				{
-					expiresIn: "7d"
+		passport.authenticate(
+			"google",
+			{ session: false },
+			async (error, email) => {
+				if (error) {
+					console.error(error)
+					await new Promise((resolve) => setTimeout(resolve, 5000)) // In case due to unexpected OAuth behavior this function is called multiple times, this avoids getting the runtime error for setting headers after they're sent to the client, while giving time for the code that runs on success to finish
+					if (!res.writableEnded) {
+						return res.redirect(`${process.env.CLIENT_URL}/500`)
+					} else return
 				}
-			)
 
-			res.cookie("refresh_token", refreshToken, {
-				httpOnly: true,
-				sameSite: "strict"
-			})
+				if (!email) {
+					return res.redirect(`${process.env.CLIENT_URL}/signin`)
+				}
 
-			return res.redirect(process.env.CLIENT_URL!)
-		})(req, res, next)
+				const refreshToken = jwt.sign(
+					{ email },
+					process.env.REFRESH_TOKEN_SECRET!,
+					{
+						expiresIn: "7d"
+					}
+				)
+
+				res.cookie("refresh_token", refreshToken, {
+					httpOnly: true,
+					sameSite: "strict"
+				})
+
+				return res.redirect(process.env.CLIENT_URL!)
+			}
+		)(req, res, next)
 	)
 
 	app.use((req, _res, next) => {
