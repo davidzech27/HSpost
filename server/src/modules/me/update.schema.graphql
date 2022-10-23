@@ -1,0 +1,8 @@
+type Mutation {
+	updateProfile(
+		name: String
+		photo: String
+		bio: String
+		schoolName: String
+	): Boolean!
+}
