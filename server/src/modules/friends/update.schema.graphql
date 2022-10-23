@@ -1,0 +1,6 @@
+type Mutation {
+	updateRelationshipDescription(
+		friendEmail: ID!
+		description: String!
+	): Boolean!
+}
