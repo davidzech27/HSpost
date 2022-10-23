@@ -31,13 +31,13 @@ const resolvers: Resolvers = {
 					])
 				} catch (error) {
 					if (error instanceof Prisma.PrismaClientKnownRequestError) {
-						if (error.code === "P2001") {
+						if (error.code === "P2025") {
 							return Promise.reject(
 								new GraphQLYogaError(
 									"You do not have a friend request from this user"
 								)
 							)
-						}
+						} else throw new Error()
 					}
 				}
 
