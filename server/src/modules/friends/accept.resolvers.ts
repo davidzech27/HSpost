@@ -45,7 +45,7 @@ const resolvers: Resolvers = {
 			} else {
 				return Promise.reject(
 					new GraphQLYogaError(
-						"You must be signed in to add a friend"
+						"You must be signed in to accept a friend request"
 					)
 				)
 			}
