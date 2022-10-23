@@ -17,7 +17,7 @@ const resolvers: Resolvers = {
 						id: true,
 						text: true,
 						poster: true,
-						usersCommented: true,
+						commentCount: true,
 						postVisibility: true,
 						postedOn: true
 					}

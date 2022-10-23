@@ -3,7 +3,7 @@ type Post {
 	text: String!
 	poster: User!
 	comments: [Comment!]
-	usersCommented: Int!
+	commentCount: Int!
 	postVisibility: PostVisibility!
 	postedOn: DateTime!
 }
