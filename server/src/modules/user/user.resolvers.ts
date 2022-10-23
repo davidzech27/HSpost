@@ -8,6 +8,26 @@ const resolvers: Resolvers = {
 					posterEmail: parent.email
 				}
 			})
+		},
+		friendships: async (parent, _, { db }) => {
+			return await db.friendship.findMany({
+				where: {
+					userEmail: parent.email
+				},
+				select: {
+					friend: {
+						select: {
+							email: true,
+							name: true,
+							photo: true,
+							bio: true,
+							schoolName: true,
+							joinedOn: true
+						}
+					},
+					relationshipDescription: true
+				}
+			})
 		}
 	}
 }

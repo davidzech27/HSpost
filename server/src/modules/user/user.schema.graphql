@@ -3,7 +3,8 @@ type User {
 	name: String!
 	photo: String
 	bio: String
-	posts: [Post!]
 	schoolName: String
 	joinedOn: DateTime!
+	posts: [Post!]
+	friendships: [Friendship!]
 }
