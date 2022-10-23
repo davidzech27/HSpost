@@ -1,4 +1,5 @@
 import { GraphQLYogaError } from "@graphql-yoga/node"
+import { Prisma } from "@prisma/client"
 import Resolvers from "types/resolvers"
 
 const resolvers: Resolvers = {
@@ -13,14 +14,26 @@ const resolvers: Resolvers = {
 					)
 				}
 
-				await db.friendRequest.create({
-					data: {
-						toUserEmail: toEmail,
-						fromUserEmail: userEmail
-					}
-				})
+				try {
+					await db.friendRequest.create({
+						data: {
+							toUserEmail: toEmail,
+							fromUserEmail: userEmail
+						}
+					})
 
-				return true
+					return true
+				} catch (error) {
+					if (error instanceof Prisma.PrismaClientKnownRequestError) {
+						if (error.code === "P2002") {
+							return Promise.reject(
+								new GraphQLYogaError(
+									"You've already sent this user a friend request"
+								)
+							)
+						} else throw new Error()
+					}
+				}
 			} else {
 				return Promise.reject(
 					new GraphQLYogaError(
