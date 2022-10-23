@@ -9,7 +9,16 @@ const resolvers: Resolvers = {
 						id: parent.id
 					}
 				})
-				.commenter()
+				.commenter({
+					select: {
+						email: true,
+						name: true,
+						photo: true,
+						bio: true,
+						schoolName: true,
+						joinedOn: true
+					}
+				})
 		},
 		replyTo: async (parent, _, { db }) => {
 			return await db.comment

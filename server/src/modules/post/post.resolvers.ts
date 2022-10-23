@@ -9,7 +9,16 @@ const resolvers: Resolvers = {
 						id: parent.id
 					}
 				})
-				.poster()
+				.poster({
+					select: {
+						email: true,
+						name: true,
+						photo: true,
+						bio: true,
+						schoolName: true,
+						joinedOn: true
+					}
+				})
 		},
 		comments: async (parent, _, { db }) => {
 			return await db.post
