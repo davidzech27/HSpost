@@ -4,7 +4,7 @@ import Resolvers from "types/resolvers"
 
 const resolvers: Resolvers = {
 	Query: {
-		me: async (_, __, { db, req, res }) => {
+		getInitialData: async (_, __, { db, req, res }) => {
 			if (!req.cookies.refresh_token) {
 				return Promise.reject(new GraphQLYogaError("Not signed in"))
 			}
@@ -21,15 +21,9 @@ const resolvers: Resolvers = {
 				return Promise.reject(new GraphQLYogaError("Session expired"))
 			}
 
-			const user = await db.user.findUnique({
+			const profile = await db.user.findUnique({
 				where: {
 					email
-				},
-				select: {
-					email: true,
-					name: true,
-					photo: true,
-					schoolName: true
 				}
 			})
 
@@ -53,7 +47,7 @@ const resolvers: Resolvers = {
 			)
 
 			return {
-				...user!,
+				profile,
 				accessToken
 			}
 		}
