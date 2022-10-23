@@ -55,7 +55,7 @@ model Post {
 enum PostVisibility {
   PUBLIC
   DISTRICT
-  PRIVATE
+  FRIENDS
 }
 
 model Comment {
