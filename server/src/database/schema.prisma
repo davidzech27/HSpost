@@ -27,7 +27,7 @@ model Friendship {
   friendEmail             String
   user                    User    @relation("friendRelations", fields: [userEmail], references: [email])
   userEmail               String
-  relationshipDescription String?
+  relationshipDescription String? @db.VarChar(100)
 
   @@id([friendEmail, userEmail])
 }
