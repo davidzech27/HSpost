@@ -1,0 +1,2 @@
+schema: "server/**/*.graphql"
+documents: "client/**/*.graphql"
