@@ -6,14 +6,14 @@ const resolvers: Resolvers = {
 			if (!afterId) {
 				return await db.post.findMany({
 					orderBy: {
-						usersCommented: "desc"
+						commentCount: "desc"
 					},
 					take
 				})
 			} else {
 				return await db.post.findMany({
 					orderBy: {
-						usersCommented: "desc"
+						commentCount: "desc"
 					},
 					cursor: {
 						id: afterId
