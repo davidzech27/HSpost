@@ -1,8 +1,0 @@
-type Query {
-	getInitialData: InitialData!
-}
-
-type InitialData {
-	profile: Profile!
-	accessToken: String!
-}
