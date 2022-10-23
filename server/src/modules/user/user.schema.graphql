@@ -5,6 +5,6 @@ type User {
 	bio: String
 	schoolName: String
 	joinedOn: DateTime!
-	posts: [Post!]
-	friendships: [Friendship!]
+	posts: [Post!]!
+	friendships: [Friendship!]!
 }
