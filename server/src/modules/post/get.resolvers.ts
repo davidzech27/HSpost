@@ -6,6 +6,14 @@ const resolvers: Resolvers = {
 			return await db.post.findUnique({
 				where: {
 					id
+				},
+				include: {
+					poster: true,
+					comments: {
+						include: {
+							commenter: true
+						}
+					}
 				}
 			})
 		}
