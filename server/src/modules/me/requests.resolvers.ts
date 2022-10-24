@@ -10,16 +10,7 @@ const resolvers: Resolvers = {
 						toUserEmail: userEmail
 					},
 					select: {
-						fromUser: {
-							select: {
-								email: true,
-								name: true,
-								photo: true,
-								bio: true,
-								schoolName: true,
-								joinedOn: true
-							}
-						}
+						fromUser: true
 					}
 				})
 

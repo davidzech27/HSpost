@@ -21,25 +21,17 @@ const resolvers: Resolvers = {
 				return Promise.reject(new GraphQLYogaError("Session expired"))
 			}
 
-			const friendShips = await db.friendship.findMany({
+			const friendships = await db.friendship.findMany({
 				where: {
 					userEmail: email
 				},
 				select: {
-					friend: {
-						select: {
-							email: true,
-							name: true,
-							photo: true,
-							bio: true,
-							schoolName: true,
-							joinedOn: true
-						}
-					}
+					friend: true,
+					relationshipDescription: true
 				}
 			})
 
-			return friendShips.map((friendship) => friendship.friend)
+			return friendships.map((friendship) => friendship.friend)
 		}
 	}
 }
