@@ -16,6 +16,9 @@ const resolvers: Resolvers = {
 							commenterEmail: userEmail,
 							replyToId,
 							postId
+						},
+						include: {
+							commenter: true
 						}
 					}),
 					db.post.update({
