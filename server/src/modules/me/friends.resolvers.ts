@@ -4,7 +4,7 @@ import Resolvers from "types/resolvers"
 
 const resolvers: Resolvers = {
 	Query: {
-		getFriends: async (_, __, { db, req }) => {
+		friends: async (_, __, { db, req }) => {
 			if (!req.cookies.refresh_token) {
 				return Promise.reject(new GraphQLYogaError("Not signed in"))
 			}

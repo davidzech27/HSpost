@@ -4,7 +4,7 @@ import Resolvers from "types/resolvers"
 
 const resolvers: Resolvers = {
 	Query: {
-		getAccessToken: async (_, __, { req, res }) => {
+		accessToken: async (_, __, { req, res }) => {
 			if (!req.cookies.refresh_token) {
 				return Promise.reject(new GraphQLYogaError("Not signed in"))
 			}

@@ -3,7 +3,7 @@ import Resolvers from "types/resolvers"
 
 const resolvers: Resolvers = {
 	Query: {
-		getFriendRequests: async (_, __, { db, userEmail }) => {
+		friendRequests: async (_, __, { db, userEmail }) => {
 			if (userEmail) {
 				const friendRequests = await db.friendRequest.findMany({
 					where: {

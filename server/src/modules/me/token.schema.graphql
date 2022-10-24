@@ -1,3 +1,3 @@
 type Query {
-	getAccessToken: String!
+	accessToken: String!
 }
