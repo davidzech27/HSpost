@@ -9,9 +9,9 @@ const resolvers: Resolvers = {
 			{ db, userEmail }
 		) => {
 			if (userEmail) {
-				if (
-					schoolName &&
-					!(await db.school.findUnique({
+				let schoolAbbreviation
+				if (schoolName) {
+					const school = await db.school.findUnique({
 						where: {
 							name_emailDomain: {
 								name: schoolName,
@@ -20,21 +20,34 @@ const resolvers: Resolvers = {
 								)
 							}
 						}
-					}))
-				) {
-					return Promise.reject(
-						new GraphQLYogaError(
-							"This school is not yet registered with HSpost"
+					})
+
+					if (!school) {
+						return Promise.reject(
+							new GraphQLYogaError(
+								"This school is not yet registered with HSpost"
+							)
 						)
-					)
+					}
+
+					schoolAbbreviation = school.abbreviation
 				}
+
+				// else {
+				// 	return Promise.reject(
+				// 		new GraphQLYogaError(
+				// 			"This school is not yet registered with HSpost"
+				// 		)
+				// 	)
+				// }
 
 				await db.user.update({
 					data: {
 						name,
 						photo,
 						bio,
-						schoolName
+						schoolName,
+						schoolAbbreviation
 					},
 					where: {
 						email: userEmail

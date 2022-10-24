@@ -15,16 +15,7 @@ const resolvers: Resolvers = {
 					userEmail: parent.email
 				},
 				select: {
-					friend: {
-						select: {
-							email: true,
-							name: true,
-							photo: true,
-							bio: true,
-							schoolName: true,
-							joinedOn: true
-						}
-					},
+					friend: true,
 					relationshipDescription: true
 				}
 			})

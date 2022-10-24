@@ -15,6 +15,7 @@ model User {
   posts                  Post[]
   comments               Comment[]
   schoolName             String?
+  schoolAbbreviation     String?
   joinedOn               DateTime        @default(now())
   friends                Friendship[]    @relation("friends")
   friendRelations        Friendship[]    @relation("friendRelations")
@@ -78,9 +79,10 @@ model District {
 }
 
 model School {
-  name        String
-  emailDomain String
-  district    District? @relation(fields: [emailDomain], references: [emailDomain])
+  name         String
+  emailDomain  String
+  district     District? @relation(fields: [emailDomain], references: [emailDomain])
+  abbreviation String
 
   @@id([name, emailDomain])
 }

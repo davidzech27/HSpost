@@ -4,6 +4,7 @@ type User {
 	photo: String
 	bio: String
 	schoolName: String
+	schoolAbbreviation: String
 	joinedOn: DateTime!
 	posts: [Post!]!
 	friendships: [Friendship!]!
