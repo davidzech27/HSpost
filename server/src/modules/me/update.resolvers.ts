@@ -33,14 +33,6 @@ const resolvers: Resolvers = {
 					schoolAbbreviation = school.abbreviation
 				}
 
-				// else {
-				// 	return Promise.reject(
-				// 		new GraphQLYogaError(
-				// 			"This school is not yet registered with HSpost"
-				// 		)
-				// 	)
-				// }
-
 				await db.user.update({
 					data: {
 						name,
