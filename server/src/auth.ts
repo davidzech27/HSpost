@@ -5,8 +5,6 @@ import cookieParser from "cookie-parser"
 import { PrismaClient } from "@prisma/client"
 import { Application } from "express"
 
-// TODO: check if email is of a valid domain and redirect user accordingly. make redirects and messages constants
-
 const initializeAuth = (app: Application, db: PrismaClient) => {
 	app.use(cookieParser())
 
