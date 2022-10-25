@@ -1,5 +1,6 @@
 import { createServer, createPubSub } from "@graphql-yoga/node"
 import express from "express"
+import cors from "cors"
 import { loadFilesSync } from "@graphql-tools/load-files"
 import { join } from "path"
 import { PrismaClient } from "@prisma/client"
@@ -34,14 +35,17 @@ const startServer = () => {
 				req,
 				res
 			}
-		},
-		cors: {
-			origin: process.env.CLIENT_URL,
-			credentials: true
 		}
 	})
 
 	const app = express()
+
+	app.use(
+		cors({
+			origin: process.env.CLIENT_URL,
+			credentials: true
+		})
+	)
 
 	initializeAuth(app, prisma)
 
