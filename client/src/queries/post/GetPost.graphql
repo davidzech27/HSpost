@@ -1,0 +1,17 @@
+query GetPost($id: ID!) {
+	post(id: $id) {
+		...PostInfo
+		poster {
+			...ProfileInfo
+		}
+		comments {
+			id
+			text
+			commenter {
+				...ProfileInfo
+			}
+			replyToId
+			commentedOn
+		}
+	}
+}

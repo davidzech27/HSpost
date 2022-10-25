@@ -1,0 +1,3 @@
+mutation AcceptFriendRequest($fromEmail: ID!) {
+	acceptFriend(fromEmail: $fromEmail)
+}

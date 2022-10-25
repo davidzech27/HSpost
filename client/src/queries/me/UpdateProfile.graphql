@@ -1,0 +1,13 @@
+mutation UpdateProfile(
+	$name: String
+	$photo: String
+	$bio: String
+	$schoolName: String
+) {
+	updateProfile(
+		name: $name
+		photo: $photo
+		bio: $bio
+		schoolName: $schoolName
+	)
+}

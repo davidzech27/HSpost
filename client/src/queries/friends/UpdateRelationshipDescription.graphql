@@ -1,0 +1,9 @@
+mutation UpdateRelationshipDescription(
+	$friendEmail: ID!
+	$description: String!
+) {
+	updateRelationshipDescription(
+		friendEmail: $friendEmail
+		description: $description
+	)
+}

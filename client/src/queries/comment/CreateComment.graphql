@@ -1,0 +1,11 @@
+mutation CreateComment($text: String!, $postId: ID!) {
+	createComment(text: $text, postId: $postId) {
+		id
+		text
+		commenter {
+			...ProfileInfo
+		}
+		replyToId
+		commentedOn
+	}
+}

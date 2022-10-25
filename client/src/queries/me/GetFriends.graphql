@@ -1,0 +1,5 @@
+query GetFriends {
+	friends {
+		...ProfileInfo
+	}
+}

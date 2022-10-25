@@ -1,0 +1,6 @@
+fragment PostInfo on Post {
+	id
+	text
+	commentCount
+	postedOn
+}

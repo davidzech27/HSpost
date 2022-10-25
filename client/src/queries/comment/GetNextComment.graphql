@@ -1,0 +1,11 @@
+subscription GetNextComment($postId: ID!) {
+	getNextComment(postId: $postId) {
+		id
+		text
+		commenter {
+			...ProfileInfo
+		}
+		replyToId
+		commentedOn
+	}
+}

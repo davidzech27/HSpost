@@ -1,0 +1,9 @@
+fragment ProfileInfo on Profile {
+	email
+	name
+	photo
+	bio
+	schoolName
+	schoolAbbreviation
+	joinedOn
+}

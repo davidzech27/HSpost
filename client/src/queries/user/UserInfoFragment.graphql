@@ -1,0 +1,9 @@
+fragment UserInfo on User {
+	email
+	name
+	photo
+	bio
+	schoolName
+	schoolAbbreviation
+	joinedOn
+}

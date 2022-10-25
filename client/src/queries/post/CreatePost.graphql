@@ -1,0 +1,5 @@
+mutation CreatePost($text: String!, $postVisibility: PostVisibility!) {
+	createPost(text: $text, postVisibility: $postVisibility) {
+		...PostInfo
+	}
+}
