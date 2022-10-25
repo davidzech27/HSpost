@@ -1,3 +1,3 @@
-mutation addFriend($toEmail: ID!) {
+mutation AddFriend($toEmail: ID!) {
 	addFriend(toEmail: $toEmail)
 }
