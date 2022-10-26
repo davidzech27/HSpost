@@ -4,6 +4,7 @@ import cors from "cors"
 import { loadFilesSync } from "@graphql-tools/load-files"
 import { join } from "path"
 import { PrismaClient } from "@prisma/client"
+import "dotenv/config"
 
 import initializeAuth from "./auth"
 
