@@ -1,0 +1,8 @@
+query GetPostInfo($id: ID!) {
+	post(id: $id) {
+		poster {
+			...Profile
+		}
+		...PostInfo
+	}
+}

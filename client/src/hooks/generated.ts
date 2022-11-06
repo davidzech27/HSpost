@@ -19,15 +19,27 @@ export type Scalars = {
 export type Comment = {
   __typename?: 'Comment';
   commentedOn: Scalars['DateTime'];
-  commenter: Profile;
+  commenter: User;
   id: Scalars['ID'];
   replyToId?: Maybe<Scalars['ID']>;
   text: Scalars['String'];
 };
 
+export type DistrictInfo = {
+  __typename?: 'DistrictInfo';
+  district: Scalars['String'];
+  schools?: Maybe<Array<Scalars['String']>>;
+};
+
+export type FriendInfo = {
+  __typename?: 'FriendInfo';
+  onPostId?: Maybe<Scalars['ID']>;
+  profile: User;
+};
+
 export type Friendship = {
   __typename?: 'Friendship';
-  friend: Profile;
+  friend: User;
   relationshipDescription?: Maybe<Scalars['String']>;
 };
 
@@ -37,7 +49,9 @@ export type Mutation = {
   addFriend: Scalars['Boolean'];
   createComment: Comment;
   createPost: Post;
+  enterPost: Scalars['Boolean'];
   removeFriend: Scalars['Boolean'];
+  report?: Maybe<Scalars['Boolean']>;
   updateProfile: Scalars['Boolean'];
   updateRelationshipDescription: Scalars['Boolean'];
 };
@@ -66,8 +80,18 @@ export type MutationCreatePostArgs = {
 };
 
 
+export type MutationEnterPostArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationRemoveFriendArgs = {
   ofEmail: Scalars['ID'];
+};
+
+
+export type MutationReportArgs = {
+  postId: Scalars['ID'];
 };
 
 
@@ -91,7 +115,7 @@ export type Post = {
   id: Scalars['ID'];
   postVisibility: PostVisibility;
   postedOn: Scalars['DateTime'];
-  poster: Profile;
+  poster: User;
   text: Scalars['String'];
 };
 
@@ -101,25 +125,15 @@ export enum PostVisibility {
   Public = 'PUBLIC'
 }
 
-export type Profile = {
-  __typename?: 'Profile';
-  bio?: Maybe<Scalars['String']>;
-  email: Scalars['ID'];
-  joinedOn: Scalars['DateTime'];
-  name: Scalars['String'];
-  photo?: Maybe<Scalars['String']>;
-  schoolAbbreviation?: Maybe<Scalars['String']>;
-  schoolName?: Maybe<Scalars['String']>;
-};
-
 export type Query = {
   __typename?: 'Query';
   accessToken: Scalars['String'];
-  feed?: Maybe<Array<Post>>;
-  friendRequests: Array<Profile>;
-  friends: Array<Profile>;
+  districtInfo: DistrictInfo;
+  feed: Array<Post>;
+  friendRequests: Array<User>;
+  friends: Array<FriendInfo>;
   post?: Maybe<Post>;
-  profile: Profile;
+  profile: User;
   user?: Maybe<User>;
 };
 
@@ -152,12 +166,14 @@ export type SubscriptionGetNextCommentArgs = {
 export type User = {
   __typename?: 'User';
   bio?: Maybe<Scalars['String']>;
+  commentCount?: Maybe<Scalars['Int']>;
   email: Scalars['ID'];
-  friendships: Array<Friendship>;
+  friendships?: Maybe<Array<Friendship>>;
   joinedOn: Scalars['DateTime'];
   name: Scalars['String'];
   photo?: Maybe<Scalars['String']>;
-  posts: Array<Post>;
+  postCount?: Maybe<Scalars['Int']>;
+  posts?: Maybe<Array<Post>>;
   schoolAbbreviation?: Maybe<Scalars['String']>;
   schoolName?: Maybe<Scalars['String']>;
 };
@@ -168,14 +184,14 @@ export type CreateCommentMutationVariables = Exact<{
 }>;
 
 
-export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'Comment', id: string, text: string, replyToId?: string | null, commentedOn: any, commenter: { __typename?: 'Profile', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } } };
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'Comment', id: string, text: string, replyToId?: string | null, commentedOn: any, commenter: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } } };
 
 export type GetNextCommentSubscriptionVariables = Exact<{
   postId: Scalars['ID'];
 }>;
 
 
-export type GetNextCommentSubscription = { __typename?: 'Subscription', getNextComment?: { __typename?: 'Comment', id: string, text: string, replyToId?: string | null, commentedOn: any, commenter: { __typename?: 'Profile', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } } | null };
+export type GetNextCommentSubscription = { __typename?: 'Subscription', getNextComment?: { __typename?: 'Comment', id: string, text: string, replyToId?: string | null, commentedOn: any, commenter: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } } | null };
 
 export type GetFeedQueryVariables = Exact<{
   take?: InputMaybe<Scalars['Int']>;
@@ -183,7 +199,7 @@ export type GetFeedQueryVariables = Exact<{
 }>;
 
 
-export type GetFeedQuery = { __typename?: 'Query', feed?: Array<{ __typename?: 'Post', id: string, text: string, commentCount: number, postedOn: any, poster: { __typename?: 'Profile', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } }> | null };
+export type GetFeedQuery = { __typename?: 'Query', feed: Array<{ __typename?: 'Post', id: string, text: string, commentCount: number, postedOn: any, poster: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } }> };
 
 export type AcceptFriendRequestMutationVariables = Exact<{
   fromEmail: Scalars['ID'];
@@ -219,20 +235,25 @@ export type GetAccessTokenQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAccessTokenQuery = { __typename?: 'Query', accessToken: string };
 
+export type GetDistrictInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDistrictInfoQuery = { __typename?: 'Query', districtInfo: { __typename?: 'DistrictInfo', schools?: Array<string> | null, district: string } };
+
 export type GetFriendRequestsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetFriendRequestsQuery = { __typename?: 'Query', friendRequests: Array<{ __typename?: 'Profile', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any }> };
+export type GetFriendRequestsQuery = { __typename?: 'Query', friendRequests: Array<{ __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any }> };
 
 export type GetFriendsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetFriendsQuery = { __typename?: 'Query', friends: Array<{ __typename?: 'Profile', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any }> };
+export type GetFriendsQuery = { __typename?: 'Query', friends: Array<{ __typename?: 'FriendInfo', onPostId?: string | null, profile: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } }> };
 
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', profile: { __typename?: 'Profile', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } };
+export type GetProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', commentCount?: number | null, postCount?: number | null, email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } };
 
 export type UpdateProfileMutationVariables = Exact<{
   name?: InputMaybe<Scalars['String']>;
@@ -252,25 +273,51 @@ export type CreatePostMutationVariables = Exact<{
 
 export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string, text: string, commentCount: number, postedOn: any } };
 
+export type EnterPostMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type EnterPostMutation = { __typename?: 'Mutation', enterPost: boolean };
+
 export type GetPostQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type GetPostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: string, text: string, commentCount: number, postedOn: any, poster: { __typename?: 'Profile', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, replyToId?: string | null, commentedOn: any, commenter: { __typename?: 'Profile', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } }> } | null };
+export type GetPostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: string, text: string, commentCount: number, postedOn: any, poster: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, replyToId?: string | null, commentedOn: any, commenter: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } }> } | null };
+
+export type GetPostInfoQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetPostInfoQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: string, text: string, commentCount: number, postedOn: any, poster: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } } | null };
 
 export type PostInfoFragment = { __typename?: 'Post', id: string, text: string, commentCount: number, postedOn: any };
+
+export type ReportPostMutationVariables = Exact<{
+  postId: Scalars['ID'];
+}>;
+
+
+export type ReportPostMutation = { __typename?: 'Mutation', report?: boolean | null };
 
 export type GetUserQueryVariables = Exact<{
   email: Scalars['ID'];
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any, posts: Array<{ __typename?: 'Post', id: string, text: string, commentCount: number, postedOn: any }>, friendships: Array<{ __typename?: 'Friendship', relationshipDescription?: string | null, friend: { __typename?: 'Profile', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } }> } | null };
+export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any, posts?: Array<{ __typename?: 'Post', id: string, text: string, commentCount: number, postedOn: any }> | null, friendships?: Array<{ __typename?: 'Friendship', relationshipDescription?: string | null, friend: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } }> | null } | null };
 
-export type ProfileInfoFragment = { __typename?: 'Profile', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any };
+export type GetUserInfoQueryVariables = Exact<{
+  email: Scalars['ID'];
+}>;
 
-export type UserInfoFragment = { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any };
+
+export type GetUserInfoQuery = { __typename?: 'Query', user?: { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any } | null };
+
+export type ProfileFragment = { __typename?: 'User', email: string, name: string, photo?: string | null, bio?: string | null, schoolName?: string | null, schoolAbbreviation?: string | null, joinedOn: any };
 
 export const PostInfoFragmentDoc = gql`
     fragment PostInfo on Post {
@@ -280,19 +327,8 @@ export const PostInfoFragmentDoc = gql`
   postedOn
 }
     `;
-export const ProfileInfoFragmentDoc = gql`
-    fragment ProfileInfo on Profile {
-  email
-  name
-  photo
-  bio
-  schoolName
-  schoolAbbreviation
-  joinedOn
-}
-    `;
-export const UserInfoFragmentDoc = gql`
-    fragment UserInfo on User {
+export const ProfileFragmentDoc = gql`
+    fragment Profile on User {
   email
   name
   photo
@@ -308,37 +344,37 @@ export const CreateCommentDocument = gql`
     id
     text
     commenter {
-      ...ProfileInfo
+      ...Profile
     }
     replyToId
     commentedOn
   }
 }
-    ${ProfileInfoFragmentDoc}`;
+    ${ProfileFragmentDoc}`;
 export const GetNextCommentDocument = gql`
     subscription GetNextComment($postId: ID!) {
   getNextComment(postId: $postId) {
     id
     text
     commenter {
-      ...ProfileInfo
+      ...Profile
     }
     replyToId
     commentedOn
   }
 }
-    ${ProfileInfoFragmentDoc}`;
+    ${ProfileFragmentDoc}`;
 export const GetFeedDocument = gql`
     query GetFeed($take: Int, $skip: Int) {
   feed(take: $take, skip: $skip) {
     ...PostInfo
     poster {
-      ...ProfileInfo
+      ...Profile
     }
   }
 }
     ${PostInfoFragmentDoc}
-${ProfileInfoFragmentDoc}`;
+${ProfileFragmentDoc}`;
 export const AcceptFriendRequestDocument = gql`
     mutation AcceptFriendRequest($fromEmail: ID!) {
   acceptFriend(fromEmail: $fromEmail)
@@ -367,27 +403,40 @@ export const GetAccessTokenDocument = gql`
   accessToken
 }
     `;
+export const GetDistrictInfoDocument = gql`
+    query GetDistrictInfo {
+  districtInfo {
+    schools
+    district
+  }
+}
+    `;
 export const GetFriendRequestsDocument = gql`
     query GetFriendRequests {
   friendRequests {
-    ...ProfileInfo
+    ...Profile
   }
 }
-    ${ProfileInfoFragmentDoc}`;
+    ${ProfileFragmentDoc}`;
 export const GetFriendsDocument = gql`
     query GetFriends {
   friends {
-    ...ProfileInfo
+    profile {
+      ...Profile
+    }
+    onPostId
   }
 }
-    ${ProfileInfoFragmentDoc}`;
+    ${ProfileFragmentDoc}`;
 export const GetProfileDocument = gql`
     query GetProfile {
   profile {
-    ...ProfileInfo
+    ...Profile
+    commentCount
+    postCount
   }
 }
-    ${ProfileInfoFragmentDoc}`;
+    ${ProfileFragmentDoc}`;
 export const UpdateProfileDocument = gql`
     mutation UpdateProfile($name: String, $photo: String, $bio: String, $schoolName: String) {
   updateProfile(name: $name, photo: $photo, bio: $bio, schoolName: $schoolName)
@@ -400,18 +449,23 @@ export const CreatePostDocument = gql`
   }
 }
     ${PostInfoFragmentDoc}`;
+export const EnterPostDocument = gql`
+    mutation EnterPost($id: ID!) {
+  enterPost(id: $id)
+}
+    `;
 export const GetPostDocument = gql`
     query GetPost($id: ID!) {
   post(id: $id) {
     ...PostInfo
     poster {
-      ...ProfileInfo
+      ...Profile
     }
     comments {
       id
       text
       commenter {
-        ...ProfileInfo
+        ...Profile
       }
       replyToId
       commentedOn
@@ -419,25 +473,47 @@ export const GetPostDocument = gql`
   }
 }
     ${PostInfoFragmentDoc}
-${ProfileInfoFragmentDoc}`;
+${ProfileFragmentDoc}`;
+export const GetPostInfoDocument = gql`
+    query GetPostInfo($id: ID!) {
+  post(id: $id) {
+    poster {
+      ...Profile
+    }
+    ...PostInfo
+  }
+}
+    ${ProfileFragmentDoc}
+${PostInfoFragmentDoc}`;
+export const ReportPostDocument = gql`
+    mutation ReportPost($postId: ID!) {
+  report(postId: $postId)
+}
+    `;
 export const GetUserDocument = gql`
     query GetUser($email: ID!) {
   user(email: $email) {
-    ...UserInfo
+    ...Profile
     posts {
       ...PostInfo
     }
     friendships {
       friend {
-        ...ProfileInfo
+        ...Profile
       }
       relationshipDescription
     }
   }
 }
-    ${UserInfoFragmentDoc}
-${PostInfoFragmentDoc}
-${ProfileInfoFragmentDoc}`;
+    ${ProfileFragmentDoc}
+${PostInfoFragmentDoc}`;
+export const GetUserInfoDocument = gql`
+    query GetUserInfo($email: ID!) {
+  user(email: $email) {
+    ...Profile
+  }
+}
+    ${ProfileFragmentDoc}`;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -470,6 +546,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetAccessToken(variables?: GetAccessTokenQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAccessTokenQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetAccessTokenQuery>(GetAccessTokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetAccessToken', 'query');
     },
+    GetDistrictInfo(variables?: GetDistrictInfoQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetDistrictInfoQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetDistrictInfoQuery>(GetDistrictInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetDistrictInfo', 'query');
+    },
     GetFriendRequests(variables?: GetFriendRequestsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetFriendRequestsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetFriendRequestsQuery>(GetFriendRequestsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetFriendRequests', 'query');
     },
@@ -485,11 +564,23 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     CreatePost(variables: CreatePostMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreatePostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreatePostMutation>(CreatePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePost', 'mutation');
     },
+    EnterPost(variables: EnterPostMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<EnterPostMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<EnterPostMutation>(EnterPostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'EnterPost', 'mutation');
+    },
     GetPost(variables: GetPostQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPostQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPostQuery>(GetPostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPost', 'query');
     },
+    GetPostInfo(variables: GetPostInfoQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPostInfoQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetPostInfoQuery>(GetPostInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPostInfo', 'query');
+    },
+    ReportPost(variables: ReportPostMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ReportPostMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ReportPostMutation>(ReportPostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ReportPost', 'mutation');
+    },
     GetUser(variables: GetUserQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserQuery>(GetUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUser', 'query');
+    },
+    GetUserInfo(variables: GetUserInfoQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserInfoQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUserInfoQuery>(GetUserInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserInfo', 'query');
     }
   };
 }

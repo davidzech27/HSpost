@@ -1,8 +1,7 @@
 import { GraphQLClient } from "graphql-request"
 import queryClient from "./queryClient"
-import { GetAccessTokenQuery } from "hooks/generated"
 
-const gqlClient = new GraphQLClient("http://localhost:4000", {
+const gqlClient = new GraphQLClient(process.env.NEXT_PUBLIC_SERVER_URL!, {
 	headers: () => {
 		const accessToken = queryClient.getQueryData(["accessToken"])
 

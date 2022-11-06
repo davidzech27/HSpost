@@ -2,7 +2,7 @@ query GetFeed($take: Int, $skip: Int) {
 	feed(take: $take, skip: $skip) {
 		...PostInfo
 		poster {
-			...ProfileInfo
+			...Profile
 		}
 	}
 }

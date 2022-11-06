@@ -1,12 +1,12 @@
 query GetUser($email: ID!) {
 	user(email: $email) {
-		...UserInfo
+		...Profile
 		posts {
 			...PostInfo
 		}
 		friendships {
 			friend {
-				...ProfileInfo
+				...Profile
 			}
 			relationshipDescription
 		}

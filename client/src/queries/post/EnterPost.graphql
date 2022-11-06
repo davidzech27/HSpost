@@ -1,0 +1,3 @@
+mutation EnterPost($id: ID!) {
+	enterPost(id: $id)
+}

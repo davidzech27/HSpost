@@ -1,3 +1,8 @@
 type Query {
-	friends: [Profile!]!
+	friends: [FriendInfo!]!
+}
+
+type FriendInfo {
+	profile: User!
+	onPostId: ID
 }

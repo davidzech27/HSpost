@@ -1,7 +1,7 @@
 type Comment {
 	id: ID!
 	text: String!
-	commenter: Profile!
+	commenter: User!
 	replyToId: ID
 	commentedOn: DateTime!
 }

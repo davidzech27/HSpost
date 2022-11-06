@@ -6,6 +6,8 @@ type User {
 	schoolName: String
 	schoolAbbreviation: String
 	joinedOn: DateTime!
-	posts: [Post!]!
-	friendships: [Friendship!]!
+	posts: [Post!]
+	friendships: [Friendship!]
+	postCount: Int
+	commentCount: Int
 }

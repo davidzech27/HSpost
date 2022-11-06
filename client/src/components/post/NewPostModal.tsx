@@ -1,43 +1,65 @@
-import { FC } from "react"
+import { FC, useEffect, useRef, useState } from "react"
+import SendButton from "components/common/SendButton"
+import api from "lib/api"
+import useMutation from "lib/useMutation"
+import { PostVisibility } from "hooks/generated"
+import Router from "next/router"
 
 const NewPostModal: FC<{ close: () => void }> = ({ close }) => {
+	const modalRef = useRef<HTMLDivElement | null>(null)
+
+	const [text, setText] = useState("")
+
+	const { mutate: createPost } = useMutation()(
+		async () =>
+			(
+				await api.CreatePost({
+					text,
+					postVisibility: PostVisibility.Public
+				})
+			).createPost,
+		{ onSuccess: ({ id }) => Router.push(`/post/${id}`) }
+	)
+
+	Router.events.on("routeChangeComplete", close)
+
+	useEffect(() => {
+		const listener = (event: MouseEvent) => {
+			if (
+				!modalRef.current ||
+				modalRef.current.contains(event.target as Node)
+			) {
+				return
+			}
+			close()
+		}
+
+		document.addEventListener("mousedown", listener)
+
+		return () => {
+			document.removeEventListener("mousedown", listener)
+		}
+	}, [modalRef, close])
+
 	return (
 		<div className="backdrop-blur-md backdrop-brightness-50 h-screen w-screen fixed top-0 left-0 flex justify-center items-center z-50">
 			<div
-				onClick={close}
-				className="bg-bold-surface h-[55%] w-1/2 rounded-2xl relative"
+				ref={modalRef}
+				className="bg-bold-surface h-[50%] w-[45%] rounded-2xl relative flex flex-col justify-between p-8"
 			>
-				<button className="box-content border-[1.5px] border-medium-border hover:border-medium-border/0 transition duration-[400ms] flex h-20 w-44 bg-background absolute bottom-6 right-6 rounded-xl group overflow-hidden">
-					<div className="text-main-text font-semibold group-hover:font-extralight text-3xl mx-auto self-center relative z-50 transition-all duration-[400ms]">
-						Post
-					</div>
+				<textarea
+					value={text}
+					onChange={(e) => setText(e.target.value)}
+					placeholder="Speak your mind here"
+					className="h-full px-4 py-3 resize-none border border-medium-border focus:border-bold-border rounded-lg bg-medium-surface focus:bg-bold-surface transition-all duration-[400ms] placeholder:opacity-70 hover:placeholder:opacity-100 focus:placeholder:opacity-100 placeholder:duration-[400ms] placeholder:font-light text-main-text outline-none text-lg"
+				></textarea>
 
-					<div
-						className="w-full h-full absolute top-0 left-0 origin-bottom-left rotate-[-98deg] group-hover:rotate-0"
-						style={{
-							transitionProperty: "transform",
-							transitionTimingFunction:
-								"cubic-bezier(0.8, 0.1, 0, 1)",
-							transitionDuration: "400ms"
-						}}
-					>
-						<div
-							className="h-[130%] w-[136%] absolute bottom-[-3%] right-[-8%] bg-gradient-to-br from-[#1E5DFF] to-[#864AFF]"
-							style={{
-								borderRadius: "100% 50%"
-							}}
-						></div>
-
-						<div className="w-full h-full top-0 absolute rotate-[98deg] origin-bottom-left bg-bold-surface from-[#1E5DFF] to-[#864AFF] -z-10">
-							<div
-								className="h-[130%] w-[136%] absolute bottom-[-3%] right-[-8%] bg-background"
-								style={{
-									borderRadius: "100% 50%"
-								}}
-							></div>
-						</div>
-					</div>
-				</button>
+				<SendButton
+					onClick={createPost}
+					className="w-1/4 h-[5.5rem] mt-4 text-2xl"
+				>
+					Post
+				</SendButton>
 			</div>
 		</div>
 	)

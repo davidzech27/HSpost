@@ -1,0 +1,5 @@
+query GetUserInfo($email: ID!) {
+	user(email: $email) {
+		...Profile
+	}
+}

@@ -2,13 +2,13 @@ query GetPost($id: ID!) {
 	post(id: $id) {
 		...PostInfo
 		poster {
-			...ProfileInfo
+			...Profile
 		}
 		comments {
 			id
 			text
 			commenter {
-				...ProfileInfo
+				...Profile
 			}
 			replyToId
 			commentedOn

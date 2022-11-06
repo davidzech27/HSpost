@@ -3,7 +3,7 @@ subscription GetNextComment($postId: ID!) {
 		id
 		text
 		commenter {
-			...ProfileInfo
+			...Profile
 		}
 		replyToId
 		commentedOn

@@ -4,7 +4,7 @@ import Resolvers from "types/resolvers"
 
 const resolvers: Resolvers = {
 	Query: {
-		friends: async (_, __, { db, req }) => {
+		friends: async (_, __, { db, req, redis }) => {
 			if (!req.cookies.refresh_token) {
 				return Promise.reject(new GraphQLYogaError("Not signed in"))
 			}
@@ -26,12 +26,30 @@ const resolvers: Resolvers = {
 					userEmail: email
 				},
 				select: {
-					friend: true,
-					relationshipDescription: true
+					friend: true
 				}
 			})
 
-			return friendships.map((friendship) => friendship.friend)
+			const profiles = friendships.map((friendship) => friendship.friend)
+
+			const onPostStatuses = await redis.mget(
+				profiles.map((friend) => `${friend.email}:onpost`)
+			)
+
+			const friends = []
+
+			for (
+				let friendIndex = 0;
+				friendIndex < profiles.length;
+				friendIndex++
+			) {
+				friends.push({
+					profile: profiles[friendIndex],
+					onPostId: onPostStatuses[friendIndex]
+				})
+			}
+
+			return friends
 		}
 	}
 }

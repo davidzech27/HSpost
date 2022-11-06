@@ -19,6 +19,16 @@ const resolvers: Resolvers = {
 					relationshipDescription: true
 				}
 			})
+		},
+		commentCount: async (parent, _, { db }) => {
+			return await db.comment.count({
+				where: { commenterEmail: parent.email }
+			})
+		},
+		postCount: async (parent, _, { db }) => {
+			return await db.post.count({
+				where: { posterEmail: parent.email }
+			})
 		}
 	}
 }

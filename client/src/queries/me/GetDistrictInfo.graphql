@@ -1,0 +1,6 @@
+query GetDistrictInfo {
+	districtInfo {
+		schools
+		district
+	}
+}

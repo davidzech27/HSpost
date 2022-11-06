@@ -1,6 +1,25 @@
-const FancyButton = () => {
+import {
+	FC,
+	ReactElement,
+	EventHandler,
+	MouseEvent,
+	forwardRef,
+	ForwardedRef
+} from "react"
+
+const FancyButton: FC<{
+	children?: ReactElement
+	onClick?: EventHandler<MouseEvent>
+}> = forwardRef(({ children, onClick }, ref: ForwardedRef<HTMLDivElement>) => {
 	return (
-		<div className="h-20 w-44 bg-background absolute bottom-6 right-6 rounded-xl group overflow-hidden">
+		<div
+			onClick={onClick}
+			ref={ref}
+			className="h-20 w-44 bg-background rounded-xl border border-faint-border hover:border-0 relative group overflow-hidden cursor-pointer group"
+		>
+			<div className="h-full flex justify-center items-center relative z-10">
+				{children}
+			</div>
 			<div
 				className="w-full h-full absolute top-0 left-0 origin-bottom-left rotate-[-98deg] group-hover:rotate-0"
 				style={{
@@ -27,6 +46,6 @@ const FancyButton = () => {
 			</div>
 		</div>
 	)
-}
+})
 
 export default FancyButton

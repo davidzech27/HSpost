@@ -3,7 +3,7 @@ mutation CreateComment($text: String!, $postId: ID!) {
 		id
 		text
 		commenter {
-			...ProfileInfo
+			...Profile
 		}
 		replyToId
 		commentedOn

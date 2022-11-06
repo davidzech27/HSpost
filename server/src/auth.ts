@@ -46,21 +46,19 @@ const initializeAuth = (app: Application, db: PrismaClient) => {
 
 					const photo = profile.photos?.[0].value ?? null
 
-					await db.user.upsert({
-						create: {
-							email,
-							name,
-							photo
-						},
-						update: {
-							photo
-						},
-						where: {
-							email
-						}
-					})
+					if (await db.user.findUnique({ where: { email } })) {
+						return done(null, email, { newUser: false })
+					} else {
+						await db.user.create({
+							data: {
+								email,
+								name,
+								photo
+							}
+						})
 
-					return done(null, email)
+						return done(null, email, { newUser: true })
+					}
 				} catch (error: any) {
 					return done(error)
 				}
@@ -79,7 +77,7 @@ const initializeAuth = (app: Application, db: PrismaClient) => {
 		passport.authenticate(
 			"google",
 			{ session: false },
-			async (error, email) => {
+			async (error, email, info) => {
 				if (error) {
 					console.error(error)
 					await new Promise((resolve) => setTimeout(resolve, 5000)) // In case due to unexpected OAuth behavior this function is called multiple times, this avoids getting the runtime error for setting headers after they're sent to the client, while giving time for the code that runs on success to finish
@@ -105,7 +103,11 @@ const initializeAuth = (app: Application, db: PrismaClient) => {
 					sameSite: "strict"
 				})
 
-				return res.redirect(process.env.CLIENT_URL!)
+				return res.redirect(
+					`${process.env.CLIENT_URL!}/${
+						info.newUser ? "/welcome" : "/?signin"
+					}`
+				)
 			}
 		)(req, res, next)
 	)

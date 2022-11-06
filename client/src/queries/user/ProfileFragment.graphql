@@ -1,4 +1,4 @@
-fragment ProfileInfo on Profile {
+fragment Profile on User {
 	email
 	name
 	photo

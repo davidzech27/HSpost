@@ -1,0 +1,8 @@
+type Query {
+	districtInfo: DistrictInfo!
+}
+
+type DistrictInfo {
+	district: String!
+	schools: [String!]
+}

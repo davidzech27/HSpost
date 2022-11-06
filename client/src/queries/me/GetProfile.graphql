@@ -1,5 +1,7 @@
 query GetProfile {
 	profile {
-		...ProfileInfo
+		...Profile
+		commentCount
+		postCount
 	}
 }

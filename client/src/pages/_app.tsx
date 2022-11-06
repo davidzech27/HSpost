@@ -3,14 +3,8 @@ import type { AppProps } from "next/app"
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
 import Head from "next/head"
 import queryClient from "lib/queryClient"
-import api from "lib/api"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import useCallOnce from "hooks/useCallOnce"
-import useModalStore from "stores/modalStore"
 
 const App = ({ Component }: AppProps) => {
-	const modal = useModalStore((state) => state.modal)
-
 	return (
 		<>
 			<Head>
@@ -21,7 +15,6 @@ const App = ({ Component }: AppProps) => {
 				<Component />
 				{/* <ReactQueryDevtools /> */}
 			</QueryClientProvider>
-			{modal}
 		</>
 	)
 }

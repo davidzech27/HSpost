@@ -1,9 +1,0 @@
-type Profile {
-	email: ID!
-	name: String!
-	photo: String
-	bio: String
-	schoolName: String
-	schoolAbbreviation: String
-	joinedOn: DateTime!
-}

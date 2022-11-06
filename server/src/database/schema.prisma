@@ -51,6 +51,7 @@ model Post {
   commentCount   Int            @default(0)
   postVisibility PostVisibility
   postedOn       DateTime       @default(now())
+  underReview    Boolean        @default(false)
 }
 
 enum PostVisibility {

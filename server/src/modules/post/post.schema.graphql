@@ -1,7 +1,7 @@
 type Post {
 	id: ID!
 	text: String!
-	poster: Profile!
+	poster: User!
 	comments: [Comment!]!
 	commentCount: Int!
 	postVisibility: PostVisibility!

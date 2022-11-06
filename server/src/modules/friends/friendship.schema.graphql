@@ -1,4 +1,4 @@
 type Friendship {
-	friend: Profile!
+	friend: User!
 	relationshipDescription: String
 }

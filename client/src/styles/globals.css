@@ -30,3 +30,35 @@ a {
 	-ms-overflow-style: none;
 	scrollbar-width: none;
 }
+
+#nprogress {
+	position: relative;
+	z-index: 9999999;
+}
+
+#nprogress .bar {
+	background: #efefef !important;
+}
+
+#nprogress .peg {
+	box-shadow: 0 0 10px #efefef, 0 0 5px #efefef !important;
+}
+
+#nprogress .spinner-icon {
+	display: none !important;
+}
+
+@layer utilities {
+	.text-fill-transparent {
+		-webkit-text-fill-color: transparent;
+	}
+}
+
+@keyframes fadeInAnimation {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}

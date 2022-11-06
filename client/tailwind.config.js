@@ -22,11 +22,17 @@ module.exports = {
 				"bold-border": "#B2B9C9",
 				"faint-surface": "#060D19",
 				"medium-surface": "#0E1420",
-				"bold-surface": "#0E1420",
+				"bold-surface": "#121725",
 				"main-text": "#EFEFEF",
-				"sub-text": "#9F9F9F"
+				"sub-text": "#9F9F9F",
+				blue: "#1E5DFF",
+				purple: "#864AFF"
 			}
 		}
 	},
-	plugins: []
+	plugins: [
+		require("@tailwindcss/forms")({
+			strategy: "class"
+		})
+	]
 }
